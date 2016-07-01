@@ -93,6 +93,7 @@
     <Compile Include="EtabObject.cs" />
     <Compile Include="EtabsModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RevitModelElements.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
