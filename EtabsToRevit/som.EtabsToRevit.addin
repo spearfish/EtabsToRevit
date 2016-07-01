@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Command">
+    <Text>EtabsToRevit Command</Text>
+    <Description></Description>
+    <Assembly>EtabsToRevit.dll</Assembly>
+    <FullClassName>DSB.RevitTools.EtabsToRevit.Command</FullClassName>
+    <ClientId>fb973bcf-ba06-4c11-ad27-0a908fe71201</ClientId>
+    <VendorId>SOM1</VendorId>
+    <VendorDescription>Danny Bentley, danny.bentely@som.com</VendorDescription>
+  </AddIn>
+  <AddIn Type="Application">
+    <Name>EtabsToRevit Application </Name>
+    <Assembly>EtabsToRevit.dll</Assembly>
+    <FullClassName>DSB.RevitTools.EtabsToRevit.App</FullClassName>
+    <ClientId>45cbbb5b-82af-43b4-9286-f2d700ed13dd</ClientId>
+    <VendorId>SOM1</VendorId>
+    <VendorDescription>Danny Bentley, danny.bentely@som.com</VendorDescription>
+  </AddIn>
+</RevitAddIns>
