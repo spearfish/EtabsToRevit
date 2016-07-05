@@ -17,7 +17,9 @@ namespace DSB.RevitTools.EtabsToRevit
     {
         public void GetBeamAndColumnSymbols(Document document)
         {
-           
+            List<RevitObjects> RevitColumns = new List<RevitObjects>();
+            List<RevitObjects> RevitFraming = new List<RevitObjects>();
+            
             FilteredElementCollector collector = new FilteredElementCollector(document);
             ICollection<Element> elements = collector.OfClass(typeof(Family)).ToElements();
 
@@ -32,16 +34,22 @@ namespace DSB.RevitTools.EtabsToRevit
                     {
                         foreach (ElementId id in familySymbolIds)
                         {
+                            RevitObjects RevitColumn = new RevitObjects;
                             FamilySymbol symbol = family.Document.GetElement(id) as FamilySymbol;
                             AnalyticalModel analyticalModel = symbol.GetAnalyticalModel() as AnalyticalModel;
+                            RevitColumn.Set_AnalyticalModel(analyticalModel);
+                            RevitColumn.Set_RevitElement(symbol);
                         }
                     }
                     else if ((int)BuiltInCategory.OST_StructuralFraming == category.Id.IntegerValue)
                     {
                         foreach (ElementId id in familySymbolIds)
                         {
+                            RevitObject RevitFrame = new RevitObject();
                             FamilySymbol symbol = family.Document.GetElement(id) as FamilySymbol;
-
+                            AnalyticalModel analyticalModel = symbol.GetAnalyticalModel() as AnalyticalModel;
+                            RevitFrame.Set_AnalyticalModel(analyticalModel);
+                            RevitFrame.Set_RevitElement(symbol);
                         }
                     }
                 }
