@@ -3,6 +3,7 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 //Analytical Model in DB.Structure
 using Autodesk.Revit.DB.Structure;
+using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using System;
@@ -15,43 +16,28 @@ namespace DSB.RevitTools.EtabsToRevit
 {
     class RevitModelElements
     {
-        public void GetBeamAndColumnSymbols(Document document)
+        public void GetBeamAndColumnSymbols(Document doc)
         {
-            List<RevitObjects> RevitColumns = new List<RevitObjects>();
-            List<RevitObjects> RevitFraming = new List<RevitObjects>();
-            
-            FilteredElementCollector collector = new FilteredElementCollector(document);
-            ICollection<Element> elements = collector.OfClass(typeof(Family)).ToElements();
+            List<RevitObject> RevitColumns = new List<RevitObject>();
+            List<RevitObject> RevitFraming = new List<RevitObject>();
 
-            foreach (Element element in elements)
+            ElementClassFilter familyInstanceFilter = new ElementClassFilter(typeof(FamilyInstance));
+            ElementCategoryFilter ColumnCategoryfilter = new ElementCategoryFilter(BuiltInCategory.OST_StructuralColumns);
+            LogicalAndFilter ColumnInstancesFilter = new LogicalAndFilter(familyInstanceFilter, ColumnCategoryfilter);
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            ICollection<Element> elements = collector.WherePasses(ColumnInstancesFilter).ToElements();
+
+            foreach (Element e in elements)
             {
-                Family family = element as Family;
-                Category category = family.FamilyCategory;
-                if (null != category)
+                // if the element is structural footing
+                FamilyInstance familyInstance = e as FamilyInstance;
+
+                if (null != familyInstance && familyInstance.StructuralType == StructuralType.Column)
                 {
-                    ISet<ElementId> familySymbolIds = family.GetFamilySymbolIds();
-                    if ((int)BuiltInCategory.OST_StructuralColumns == category.Id.IntegerValue)
-                    {
-                        foreach (ElementId id in familySymbolIds)
-                        {
-                            RevitObjects RevitColumn = new RevitObjects;
-                            FamilySymbol symbol = family.Document.GetElement(id) as FamilySymbol;
-                            AnalyticalModel analyticalModel = symbol.GetAnalyticalModel() as AnalyticalModel;
-                            RevitColumn.Set_AnalyticalModel(analyticalModel);
-                            RevitColumn.Set_RevitElement(symbol);
-                        }
-                    }
-                    else if ((int)BuiltInCategory.OST_StructuralFraming == category.Id.IntegerValue)
-                    {
-                        foreach (ElementId id in familySymbolIds)
-                        {
-                            RevitObject RevitFrame = new RevitObject();
-                            FamilySymbol symbol = family.Document.GetElement(id) as FamilySymbol;
-                            AnalyticalModel analyticalModel = symbol.GetAnalyticalModel() as AnalyticalModel;
-                            RevitFrame.Set_AnalyticalModel(analyticalModel);
-                            RevitFrame.Set_RevitElement(symbol);
-                        }
-                    }
+                    string familyInstanceName = familyInstance.Name;
+                    var type = familyInstance.GetType();
+                    Family family = familyInstance.Symbol.Family;
+                    AnalyticalModel model = familyInstance.GetAnalyticalModel();
                 }
             }
         }

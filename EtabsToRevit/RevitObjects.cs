@@ -1,3 +1,7 @@
+using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Structure;
+using Autodesk.Revit.UI;
+using Autodesk.Revit.UI.Selection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,11 +24,11 @@ namespace DSB.RevitTools.EtabsToRevit
         {
             _RevitElement = RevitElement;
         }
-        public Get_AnalyticalModel()
+        public AnalyticalModel Get_AnalyticalModel()
         {
             return _AnalyticalModel;
         }
-        public Get__RevitElement()
+        public FamilySymbol Get__RevitElement()
         {
             return _RevitElement;
         }
