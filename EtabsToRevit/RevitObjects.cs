@@ -13,16 +13,21 @@ namespace DSB.RevitTools.EtabsToRevit
     class RevitObject
     {
         private AnalyticalModel _AnalyticalModel;
-        private FamilySymbol _RevitElement;
+        private Family _RevitElement;
+        private string _FamilyInstanceName;
         
-        public void Set_AnalyticalModel(AnalyticalModel AnalyticalModel)
+        public void Set_AnalyticalModel(AnalyticalModel analyticalModel)
         {
-            _AnalyticalModel = AnalyticalModel;
+            _AnalyticalModel = analyticalModel;
         }
         
-        public void Set_RevitElement(FamilySymbol RevitElement)
+        public void Set_RevitElement(Family RevitElement)
         {
             _RevitElement = RevitElement;
+        }
+        public void Set_FamilyInstanceName(string FamilyInstanceName)
+        {
+            _FamilyInstanceName = FamilyInstanceName;
         }
         public AnalyticalModel Get_AnalyticalModel()
         {
