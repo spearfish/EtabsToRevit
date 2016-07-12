@@ -56,10 +56,10 @@ namespace DSB.RevitTools.EtabsToRevit
                 switch (Column)
                 {
                     case 1:
-                        Etabs_Object.Set_SectionName(Convert.ToString(cellValue));
+                        Etabs_Object._SectionName = Convert.ToString(cellValue);
                         break;
                     case 2:
-                        Etabs_Object.Set_LabelNumber(Convert.ToString(cellValue));
+                        Etabs_Object._LabelNumber = Convert.ToString(cellValue);
                         break;
                     case 3:
                         Etabs_Object.Set_Start_X(Convert.ToDouble(cellValue));
@@ -68,19 +68,19 @@ namespace DSB.RevitTools.EtabsToRevit
                         Etabs_Object.Set_Start_Y(Convert.ToDouble(cellValue));
                         break;
                     case 5:
-                        Etabs_Object.Set_Start_Z(Convert.ToDouble(cellValue));
+                        Etabs_Object.Set_Start_Z( Convert.ToDouble(cellValue));
                         break;
                     case 6:
-                        Etabs_Object.Set_End_X(Convert.ToDouble(cellValue));
+                        Etabs_Object._End_X = Convert.ToDouble(cellValue);
                         break;
                     case 7:
-                        Etabs_Object.Set_End_Y(Convert.ToDouble(cellValue));
+                        Etabs_Object._End_Y = Convert.ToDouble(cellValue);
                         break;
                     case 8:
-                        Etabs_Object.Set_End_Z(Convert.ToDouble(cellValue));
+                        Etabs_Object._End_Z = Convert.ToDouble(cellValue);
                         break;
                     case 9:
-                        Etabs_Object.Set_UniqueID(Convert.ToInt32(cellValue));
+                        Etabs_Object._UniqueID = Convert.ToInt32(cellValue);
                         break;
                 }
             }
@@ -94,7 +94,7 @@ namespace DSB.RevitTools.EtabsToRevit
             List<EtabObject> EtabsColumnList = new List<EtabObject>();
             foreach (EtabObject EtabsObj in EtabsList)
             {
-                if (EtabsObj.Get_LabelNumber().Contains("C"))
+                if (EtabsObj._LabelNumber.Contains("C"))
                 {
                     EtabsColumnList.Add(EtabsObj);
                 }

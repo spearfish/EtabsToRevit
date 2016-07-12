@@ -16,23 +16,20 @@ namespace DSB.RevitTools.EtabsToRevit
 {
     class RevitModelElements
     {
-        public void GetBeamAndColumnSymbols(Document doc)
-        {
-            List<RevitObject> RevitColumnsList = new List<RevitObject>();
-            List<RevitObject> RevitFramingList = new List<RevitObject>();
+        private List<RevitObject> _RevitColumnsList = new List<RevitObject>();
+        private List<RevitObject> _RevitFramingList = new List<RevitObject>();
 
+        public void Get_ColumnSymbols(Document doc)
+        {
             ElementClassFilter familyInstanceFilter = new ElementClassFilter(typeof(FamilyInstance));
             // Category filter 
             ElementCategoryFilter ColumnCategoryfilter = new ElementCategoryFilter(BuiltInCategory.OST_StructuralColumns);
-            ElementCategoryFilter FramingCategoryfilter = new ElementCategoryFilter(BuiltInCategory.OST_StructuralFaming);
             // Instance filter 
             LogicalAndFilter ColumnInstancesFilter = new LogicalAndFilter(familyInstanceFilter, ColumnCategoryfilter);
-            LogicalAndFilter FramingInstancesFilter = new LogicalAndFilter(familyInstanceFilter, FramingCategoryfilter);
             
             FilteredElementCollector collector = new FilteredElementCollector(doc);
             // Colletion Array of Elements
             ICollection<Element> ColumnElements = collector.WherePasses(ColumnInstancesFilter).ToElements();
-            ICollection<Element> FramingElements = collector.WherePasses(FramingInstancesFilter).ToElements();
 
             foreach (Element e in ColumnElements)
             {
@@ -41,36 +38,68 @@ namespace DSB.RevitTools.EtabsToRevit
                 if (null != familyInstance && familyInstance.StructuralType == StructuralType.Column)
                 {
                     AnalyticalModel analyticalModel = familyInstance.GetAnalyticalModel();
+                    Curve analyticalCurve = analyticalModel.GetCurve();
+                    XYZ pointStart = analyticalCurve.GetEndPoint(0);
+                    XYZ pointEnd = analyticalCurve.GetEndPoint(1);
                     Family family = familyInstance.Symbol.Family;
                     string familyInstanceName = familyInstance.Name;
-                    var type = familyInstance.GetType();
+
                     //Create Revit Object and Set Methods 
                     RevitObject revitObject = new RevitObject();
                     revitObject.Set_AnalyticalModel(analyticalModel);
-                    revitObject.Set_RevitElement(family);
+                    revitObject.Set_PointStart(pointStart);
+                    revitObject.Set_PointEnd(pointEnd);
+                    revitObject.Set_RevitFamily(family);
                     revitObject.Set_FamilyInstanceName(familyInstanceName);
-                    RevitColumnsList.Add(revitObject);
+                    _RevitColumnsList.Add(revitObject);
                 }
             }
-            
+        }
+
+        public void Get_BeamSymbols(Document doc)
+        {
+            ElementClassFilter familyInstanceFilter = new ElementClassFilter(typeof(FamilyInstance));
+            // Category filter 
+            ElementCategoryFilter FramingCategoryfilter = new ElementCategoryFilter(BuiltInCategory.OST_StructuralFraming);
+            // Instance filter 
+            LogicalAndFilter FramingInstancesFilter = new LogicalAndFilter(familyInstanceFilter, FramingCategoryfilter);
+
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            // Colletion Array of Elements
+            ICollection<Element> FramingElements = collector.WherePasses(FramingInstancesFilter).ToElements();
+
             foreach (Element e in FramingElements)
             {
                 FamilyInstance familyInstance = e as FamilyInstance;
 
-                if (null != familyInstance && familyInstance.StructuralType == StructuralType.Framing)
+                if (null != familyInstance && familyInstance.StructuralType == StructuralType.Beam)
                 {
                     AnalyticalModel analyticalModel = familyInstance.GetAnalyticalModel();
+                    Curve analyticalCurve = analyticalModel.GetCurve();
+                    XYZ pointStart = analyticalCurve.GetEndPoint(0);
+                    XYZ pointEnd = analyticalCurve.GetEndPoint(1);
                     Family family = familyInstance.Symbol.Family;
                     string familyInstanceName = familyInstance.Name;
-                    var type = familyInstance.GetType();
+
                     //Create Revit Object and Set Methods 
                     RevitObject revitObject = new RevitObject();
                     revitObject.Set_AnalyticalModel(analyticalModel);
-                    revitObject.Set_RevitElement(family);
+                    revitObject.Set_PointStart(pointStart);
+                    revitObject.Set_PointEnd(pointEnd);
+                    revitObject.Set_RevitFamily(family);
                     revitObject.Set_FamilyInstanceName(familyInstanceName);
-                    RevitFramingList.Add(revitObject);
+                    _RevitFramingList.Add(revitObject);
                 }
             }
+        }
+
+        public List<RevitObject> Get_RevitColumnsList()
+        {
+            return _RevitColumnsList;
+        }
+        public List<RevitObject> Get_RevitFramingList()
+        {
+            return _RevitFramingList;
         }
     }
 }

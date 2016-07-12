@@ -13,29 +13,53 @@ namespace DSB.RevitTools.EtabsToRevit
     class RevitObject
     {
         private AnalyticalModel _AnalyticalModel;
-        private Family _RevitElement;
+        private XYZ _PointStart;
+        private XYZ _PointEnd;
+        private Family _RevitFamily;
         private string _FamilyInstanceName;
         
         public void Set_AnalyticalModel(AnalyticalModel analyticalModel)
         {
             _AnalyticalModel = analyticalModel;
         }
-        
-        public void Set_RevitElement(Family RevitElement)
+        public void Set_PointStart(XYZ PointStart)
         {
-            _RevitElement = RevitElement;
+            _PointStart = PointStart;
+        }
+        public void Set_PointEnd(XYZ PointEnd)
+        {
+            _PointEnd = PointEnd;
+        }
+        public void Set_RevitFamily(Family RevitFamily)
+        {
+            _RevitFamily = RevitFamily;
         }
         public void Set_FamilyInstanceName(string FamilyInstanceName)
         {
             _FamilyInstanceName = FamilyInstanceName;
         }
+        
+
+        //Get Object Elements
         public AnalyticalModel Get_AnalyticalModel()
         {
             return _AnalyticalModel;
         }
-        public FamilySymbol Get__RevitElement()
+        public XYZ Get_PointStart()
         {
-            return _RevitElement;
+            return _PointStart;
+        }
+        public XYZ Get_PointEnd()
+        {
+            return _PointEnd;
+        }
+        public Family Get_RevitFamily()
+        {
+            return _RevitFamily;
+        }
+        public string Get_FamilyInstanceName()
+        {
+            return _FamilyInstanceName;
         }
     }
 }

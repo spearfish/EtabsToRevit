@@ -26,16 +26,26 @@ namespace DSB.RevitTools.EtabsToRevit
             Document doc = uidoc.Document;
 
             EtabsModel EtabModel = new EtabsModel();
-            string path = @"F:\00 - ETABS\test\DB-TEST.xlsx";
+            string path = @"F:\00 - ETABS\REVIT_Report.xlsx";
             List<EtabObject> EtabsList = EtabModel.Get_ExcelFileToList(path);
 
             // Etab Column List Sorted using the X value. 
             List<EtabObject> EtabsColumnList = EtabModel.Get_EtabsColumnList(EtabsList);
-            List<EtabObject> Sorted_EtabsColumnList = EtabsColumnList.OrderBy(o => o.Get_Start_X()).ToList();
+            //List<EtabObject> Sorted_EtabsColumnList = EtabsColumnList.OrderBy(o => o._Start_X).ToList();
 
-            //List<EtabObject> Sorted_EtabsList = EtabsList.OrderBy(o => o.Get_Start_X()).ToList();
+            // Revit Column and Beam List Sorted by X value
             RevitModelElements revitModelElements = new RevitModelElements();
-            revitModelElements.GetBeamAndColumnSymbols(doc);
+            revitModelElements.Get_ColumnSymbols(doc);
+            revitModelElements.Get_BeamSymbols(doc);
+            List<RevitObject> _RevitColumnsList = revitModelElements.Get_RevitColumnsList();
+            List<RevitObject> Sorted_RevitColumnsList = _RevitColumnsList.OrderBy(o => o.Get_PointStart().X).ToList();
+            List<RevitObject> _RevitFramingList = revitModelElements.Get_RevitFramingList();
+            List<RevitObject> Sorted_RevitFramingList = _RevitFramingList.OrderBy(o => o.Get_PointStart().X).ToList();
+
+            Algorithm algorithm = new Algorithm(EtabsColumnList);
+            RevitObject revitObj = Sorted_RevitColumnsList[2];
+            algorithm.Run(revitObj);
+            
             return Result.Succeeded;
         }
     }
