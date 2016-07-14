@@ -101,5 +101,18 @@ namespace DSB.RevitTools.EtabsToRevit
             }
             return EtabsColumnList;
         }
+        // Check if Etabs Label Number contains a "B" to add to beam list. 
+        public List<EtabObject> Get_EtabsBeamList(List<EtabObject> EtabsList)
+        {
+            List<EtabObject> EtabsBeamList = new List<EtabObject>();
+            foreach (EtabObject EtabsObj in EtabsList)
+            {
+                if (EtabsObj._LabelNumber.Contains("B"))
+                {
+                    EtabsBeamList.Add(EtabsObj);
+                }
+            }
+            return EtabsBeamList;
+        }
     }
 }

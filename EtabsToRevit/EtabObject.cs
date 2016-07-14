@@ -13,6 +13,9 @@ namespace DSB.RevitTools.EtabsToRevit
         public int _UniqueID {get; set;}
 
         private Point _Point_Start = new Point();
+        private Point _Point_End = new Point();
+        
+        // Start get and set start points
         public void Set_Start_X(double Start_X)
         {
             _Point_Start.X = Start_X;
@@ -41,10 +44,36 @@ namespace DSB.RevitTools.EtabsToRevit
         {
             return _Point_Start;
         }
-
-        public double _End_X {get; set;}
-        public double _End_Y {get; set;}
-        public double _End_Z {get; set;}
+        
+        // End get and set start points
+        public void Set_End_X(double End_X)
+        {
+            _Point_End.X = End_X;
+        }
+        public void Set_End_Y(double End_Y)
+        {
+            _Point_End.Y = End_Y;
+        }
+        public void Set_End_Z(double End_Z)
+        {
+            _Point_End.Z = End_Z;
+        }
+        public double Get_End_X()
+        {
+            return _Point_End.X;
+        }
+        public double Get_End_Y()
+        {
+            return _Point_End.Y;
+        }
+        public double Get_End_Z()
+        {
+            return _Point_End.Z;
+        }
+        public Point Get_EndPoint()
+        {
+            return _Point_End;
+        }
         
 
         
