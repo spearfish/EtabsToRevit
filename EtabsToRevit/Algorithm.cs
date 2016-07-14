@@ -13,20 +13,28 @@ namespace DSB.RevitTools.EtabsToRevit
         readonly List<Point> _points = new List<Point>();
         public int Distance { get; private set; }
         const double MaxDistance = 2;
-
-        public Algorithm(List<EtabObject> EtabList)
+        
+        public Algorithm(Points EtabPointList)
         {
-            foreach (EtabObject EtabObj in EtabList)
+            foreach (Point p in EtabPointList)
             {
-                _points.Add(EtabObj.Get_StartPoint());
+                _points.Add(p);
             }
             
             _points.Sort();
         }
+<<<<<<< HEAD
         
         public Point Run(XYZ revitObj)
+=======
+        public List<Point> Get_Points()
         {
-            return ClosestPair(_points, revitObj);
+            return _Points;
+        }
+        public Point Run(RevitObject revitObj, List<Points> points)
+>>>>>>> origin/master
+        {
+            return ClosestPair(points, revitObj);
         }
         public Point[] Run2()
         {
