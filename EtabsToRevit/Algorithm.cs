@@ -11,7 +11,7 @@ namespace DSB.RevitTools.EtabsToRevit
     {
         readonly List<Point> _points = new List<Point>();
         public int Distance { get; private set; }
-        const double MaxDistance = 5;
+        const double MaxDistance = 2;
 
         public Algorithm(List<EtabObject> EtabList)
         {
@@ -22,8 +22,8 @@ namespace DSB.RevitTools.EtabsToRevit
             
             _points.Sort();
         }
-
-        public Point[] Run(RevitObject revitObj)
+        
+        public Point Run(RevitObject revitObj)
         {
             return ClosestPair(_points, revitObj);
         }
@@ -31,10 +31,10 @@ namespace DSB.RevitTools.EtabsToRevit
         {
             return NaiveClosestPair(_points);
         }
-
-        static Point[] ClosestPair(IEnumerable<Point> points, RevitObject revitObj)
+        
+        static Point ClosestPair(IEnumerable<Point> points, RevitObject revitObj)
         {
-            var closestPair = new Point[2];
+            var closestPair = new Point();
 
             // When we start the min distance is the infinity
             var crtMinDist = MaxDistance;
@@ -44,49 +44,20 @@ namespace DSB.RevitTools.EtabsToRevit
             sorted.AddRange(points);
             sorted.Sort(XComparer.XCompare);
 
-            // When we start the left most candidate is the first one
-            var leftMostCandidateIndex = 0;
+            // TODO Replace this with XYZ coord 
+            Point current = new Point();
+            current.X = revitObj.Get_PointStart().X;
+            current.Y = revitObj.Get_PointStart().Y;
+            current.Z = revitObj.Get_PointStart().Z;
+            sorted.RemoveAll(x => x.X < current.X - crtMinDist || current.X + crtMinDist < x.X);
+            sorted.RemoveAll(x => x.Y < current.Y - crtMinDist || current.Y + crtMinDist < x.Y);
+            sorted.RemoveAll(x => x.Z < current.Z - crtMinDist || current.Z + crtMinDist < x.Z);
 
-            // Vertically sorted set of candidates            
-            var candidates = new TreeSet<Point>(new YComparer()); // C5 data structure
-
-            // For each point from left to right
-            foreach (var current in sorted)
-            {
-                // Shrink the candidates (current.X
-                while (revitObj.Get_PointStart().X - sorted[leftMostCandidateIndex].X > crtMinDist)
-                {
-                    candidates.Remove(sorted[leftMostCandidateIndex]);
-                    leftMostCandidateIndex++;
-                }
-
-                // Compute the y head and the y tail of the candidates set
-                var head = new Point { X = revitObj.Get_PointStart().X, Y = checked(revitObj.Get_PointStart().Y - crtMinDist), Z = revitObj.Get_PointStart().Z };
-                var tail = new Point { X = revitObj.Get_PointStart().X, Y = checked(revitObj.Get_PointStart().Y + crtMinDist), Z = revitObj.Get_PointStart().Z };
-
-                // We take only the interesting candidates in the y axis                
-                var subset = candidates.RangeFromTo(head, tail);
-
-                foreach (var point in subset)
-                {
-                    var distance = current.Distance(point);
-                    if (distance < 0) throw new ApplicationException("number overflow");
-
-                    // Simple min computation
-                    if (distance < crtMinDist)
-                    {
-                        crtMinDist = distance;
-                        closestPair[0] = current;
-                        closestPair[1] = point;
-                    }
-                }
-
-                // The current point is now a candidate
-                candidates.Add(current);
-            }
-
+            var sortedX = sorted;
+            
             return closestPair;
         }
+    
 
         static Point[] NaiveClosestPair(IEnumerable<Point> points)
         {

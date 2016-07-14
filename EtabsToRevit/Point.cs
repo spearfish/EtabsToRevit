@@ -40,8 +40,9 @@ namespace DSB.RevitTools.EtabsToRevit
         {
             var dx = p.X - X;
             var dy = p.Y - Y;
+            var dz = p.Z - Z;
 
-            var dist = (dx * dx) + (dy * dy);
+            var dist = (dx * dx) + (dy * dy) + (dz * dz);
             dist = Math.Sqrt(dist); // can be deleted
 
             return dist;

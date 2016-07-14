@@ -43,7 +43,7 @@ namespace DSB.RevitTools.EtabsToRevit
             List<RevitObject> Sorted_RevitFramingList = _RevitFramingList.OrderBy(o => o.Get_PointStart().X).ToList();
 
             Algorithm algorithm = new Algorithm(EtabsColumnList);
-            RevitObject revitObj = Sorted_RevitColumnsList[2];
+            RevitObject revitObj = Sorted_RevitColumnsList[10];
             algorithm.Run(revitObj);
             
             return Result.Succeeded;
