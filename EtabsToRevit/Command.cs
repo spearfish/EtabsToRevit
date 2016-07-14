@@ -44,7 +44,8 @@ namespace DSB.RevitTools.EtabsToRevit
 
             Algorithm algorithm = new Algorithm(EtabsColumnList);
             RevitObject revitObj = Sorted_RevitColumnsList[10];
-            algorithm.Run(revitObj);
+            XYZ RvtObj = revitObj.Get_PointStart();
+            algorithm.Run(RvtObj);
             
             return Result.Succeeded;
         }

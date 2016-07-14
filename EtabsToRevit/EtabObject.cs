@@ -9,10 +9,14 @@ namespace DSB.RevitTools.EtabsToRevit
     class EtabObject
     {
         public string _SectionName { get; set; }
-        public string _LabelNumber { get; set; }
         public int _UniqueID {get; set;}
 
         private Point _Point_Start = new Point();
+
+        public void Set_LabelNumber(string LabelNumber)
+        {
+            _Point_Start.LabelNumber = LabelNumber;
+        }
         public void Set_Start_X(double Start_X)
         {
             _Point_Start.X = Start_X;
@@ -24,6 +28,11 @@ namespace DSB.RevitTools.EtabsToRevit
         public void Set_Start_Z(double Start_Z)
         {
             _Point_Start.Z = Start_Z;
+        }
+
+        public string Get_LabelNumber()
+        {
+            return _Point_Start.LabelNumber;
         }
         public double Get_Start_X()
         {

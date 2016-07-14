@@ -10,6 +10,7 @@ namespace DSB.RevitTools.EtabsToRevit
     {
         private static int _counter;
         public int Id { get; private set; }
+        public string LabelNumber { get; set; }
         public double X { get; set; } // x pos
         public double Y { get; set; } // y pos
         public double Z { get; set; } // y pos
@@ -28,6 +29,7 @@ namespace DSB.RevitTools.EtabsToRevit
         {
             return Id.GetHashCode();
         }
+        
         public int CompareTo(object obj)
         {
             var o = obj as Point;

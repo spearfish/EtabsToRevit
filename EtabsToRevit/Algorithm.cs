@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Autodesk.Revit.DB;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +24,7 @@ namespace DSB.RevitTools.EtabsToRevit
             _points.Sort();
         }
         
-        public Point Run(RevitObject revitObj)
+        public Point Run(XYZ revitObj)
         {
             return ClosestPair(_points, revitObj);
         }
@@ -32,7 +33,7 @@ namespace DSB.RevitTools.EtabsToRevit
             return NaiveClosestPair(_points);
         }
         
-        static Point ClosestPair(IEnumerable<Point> points, RevitObject revitObj)
+        static Point ClosestPair(IEnumerable<Point> points, XYZ rvtObj)
         {
             var closestPair = new Point();
 
@@ -46,12 +47,10 @@ namespace DSB.RevitTools.EtabsToRevit
 
             // TODO Replace this with XYZ coord 
             Point current = new Point();
-            current.X = revitObj.Get_PointStart().X;
-            current.Y = revitObj.Get_PointStart().Y;
-            current.Z = revitObj.Get_PointStart().Z;
-            sorted.RemoveAll(x => x.X < current.X - crtMinDist || current.X + crtMinDist < x.X);
-            sorted.RemoveAll(x => x.Y < current.Y - crtMinDist || current.Y + crtMinDist < x.Y);
-            sorted.RemoveAll(x => x.Z < current.Z - crtMinDist || current.Z + crtMinDist < x.Z);
+
+            sorted.RemoveAll(x => x.X < rvtObj.X - crtMinDist || rvtObj.X + crtMinDist < x.X);
+            sorted.RemoveAll(x => x.Y < rvtObj.Y - crtMinDist || rvtObj.Y + crtMinDist < x.Y);
+            sorted.RemoveAll(x => x.Z < rvtObj.Z - crtMinDist || rvtObj.Z + crtMinDist < x.Z);
 
             var sortedX = sorted;
             
