@@ -31,10 +31,10 @@ namespace DSB.RevitTools.EtabsToRevit
 
             // Etab Column List Sorted using the X value. 
             List<EtabObject> EtabsColumnList = EtabModel.Get_EtabsColumnList(EtabsList);
-            List<EtabObject> Sorted_EtabsColumnList = EtabsColumnList.OrderBy(o => o._Start_X).ToList();
+            List<EtabObject> Sorted_EtabsColumnList = EtabsColumnList.OrderBy(o => o.Get_StartPoint().X).ToList();
             
-            List<EtabObject> EtabsBeamList = EtabModel.Get_EtabsBeamList(EtabList);
-            List<EtabObject> Sorted_EtabsBeamList = EtabsBeamList.OrderBy(o => o._Start_X).ToList();
+            List<EtabObject> EtabsBeamList = EtabModel.Get_EtabsBeamList(EtabsList);
+            List<EtabObject> Sorted_EtabsBeamList = EtabsBeamList.OrderBy(o => o.Get_StartPoint().X).ToList();
 
             // Revit Column and Beam List Sorted by X value
             RevitModelElements revitModelElements = new RevitModelElements();
@@ -46,30 +46,43 @@ namespace DSB.RevitTools.EtabsToRevit
             List<RevitObject> Sorted_RevitFramingList = _RevitFramingList.OrderBy(o => o.Get_PointStart().X).ToList();
             
             // Algorithm list for columns start and end points 
-            Algorithm algorithmColumnStart = new Algorithm(Sorted_EtabsColumnList._Point_Start());
-            Algorithm algorithmColumnEnd = new Algorithm(Sorted_EtabsColumnList._Point_End());
-            List<Points> pointsColumnStart = algorithmColumnStart.Get_Points();
-            List<Points> pointsColumnEnd = algorithmColumnEnd.Get_Points();
+            Algorithm algorithmColumnStart = new Algorithm(Sorted_EtabsColumnList, "Start");
+            Algorithm algorithmColumnEnd = new Algorithm(Sorted_EtabsColumnList, "End");
+            List<Point> pointsColumnStart = algorithmColumnStart.Get_Points();
+            List<Point> pointsColumnEnd = algorithmColumnEnd.Get_Points();
             
             // Algorithm list for beams start and end points
-            Algorithm algorithmBeamStart = new Algorithm(Sorted_EtabsBeamList._Point_Start());
-            Algorithm algorithmBeamEnd = new Algorithm(Sorted_EtabsBeamList._Point_End);
-            List<Points> pointsBeamStart = algorithmBeamStart.Get_Points();
-            List<Points> pointsBeamEnd = algorithmBeamEnd.Get_Points();
+            Algorithm algorithmBeamStart = new Algorithm(Sorted_EtabsBeamList, "Start");
+            Algorithm algorithmBeamEnd = new Algorithm(Sorted_EtabsBeamList, "End");
+            List<Point> pointsBeamStart = algorithmBeamStart.Get_Points();
+            List<Point> pointsBeamEnd = algorithmBeamEnd.Get_Points();
             
             RevitObject revitObj = Sorted_RevitColumnsList[10];
-<<<<<<< HEAD
+
             XYZ RvtObj = revitObj.Get_PointStart();
-            algorithm.Run(RvtObj);
-=======
->>>>>>> origin/master
-            
-            algorithm.Run(revitObj, pointsColumnStart);
-            
-            foreach (RevitObject in Sorted_RevitColumnsList)
+            //algorithm.Run(RvtObj);
+                        
+            //algorithm.Run(revitObj, pointsColumnStart);
+            List<string> test = new List<string>();
+            List<string> test1 = new List<string>();
+            foreach (RevitObject rvtObj in Sorted_RevitColumnsList)
             {
-                Point startPoint = algorithmColumnStart.Run(RevitObject, pointsColumnStart);
-                Point endPoint = algorithmColumnEnd.Run(RevitObject, pointsColumnEnd);
+                var startPoint = algorithmColumnStart.Run(rvtObj.Get_PointStart(), pointsColumnStart);
+                var endPoint = algorithmColumnEnd.Run(rvtObj.Get_PointEnd(), pointsColumnEnd);
+
+                foreach (Point pStart in startPoint)
+                {
+                    foreach (Point pEnd in endPoint)
+                    {
+                        if (pStart.UniqueID == pEnd.UniqueID)
+                        {
+                            var EtabsObject = Sorted_EtabsColumnList.Find(item => item.Get_UniqueID() == pStart.UniqueID);
+                            test.Add(EtabsObject._SectionName);
+                            test1.Add(EtabsObject.Get_UniqueID().ToString());
+                            break;
+                        }
+                    }
+                }
             }
             return Result.Succeeded;
         }

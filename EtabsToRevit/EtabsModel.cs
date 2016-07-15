@@ -71,16 +71,16 @@ namespace DSB.RevitTools.EtabsToRevit
                         Etabs_Object.Set_Start_Z( Convert.ToDouble(cellValue));
                         break;
                     case 6:
-                        Etabs_Object._End_X = Convert.ToDouble(cellValue);
+                        Etabs_Object.Set_End_X(Convert.ToDouble(cellValue));
                         break;
                     case 7:
-                        Etabs_Object._End_Y = Convert.ToDouble(cellValue);
+                        Etabs_Object.Set_End_Y(Convert.ToDouble(cellValue));
                         break;
                     case 8:
-                        Etabs_Object._End_Z = Convert.ToDouble(cellValue);
+                        Etabs_Object.Set_End_Z(Convert.ToDouble(cellValue));
                         break;
                     case 9:
-                        Etabs_Object._UniqueID = Convert.ToInt32(cellValue);
+                        Etabs_Object.Set_UniqueID(Convert.ToInt32(cellValue));
                         break;
                 }
             }

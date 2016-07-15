@@ -14,36 +14,46 @@ namespace DSB.RevitTools.EtabsToRevit
         public int Distance { get; private set; }
         const double MaxDistance = 2;
         
-        public Algorithm(Points EtabPointList)
+        public Algorithm(List<EtabObject> list, string type)
         {
-            foreach (Point p in EtabPointList)
+            if (type == "Start")
             {
-                _points.Add(p);
+                Set_StartPoints(list);
             }
-            
-            _points.Sort();
+            if (type == "End")
+            {
+                Set_EndPoints(list);
+            }
         }
-<<<<<<< HEAD
-        
-        public Point Run(XYZ revitObj)
-=======
+
+        public void Set_StartPoints(List<EtabObject> EtabPointList)
+        {
+            foreach (EtabObject p in EtabPointList)
+            {
+                _points.Add(p.Get_StartPoint());
+            }
+        }
+        public void Set_EndPoints(List<EtabObject> EtabPointList)
+        {
+            foreach (EtabObject p in EtabPointList)
+            {
+                _points.Add(p.Get_EndPoint());
+            }
+        }
+
         public List<Point> Get_Points()
         {
-            return _Points;
+            return _points;
         }
-        public Point Run(RevitObject revitObj, List<Points> points)
->>>>>>> origin/master
+
+        public List<Point> Run(XYZ revitObj, List<Point> points)
         {
             return ClosestPair(points, revitObj);
         }
-        public Point[] Run2()
+
+        static List<Point> ClosestPair(IEnumerable<Point> points, XYZ rvtObj)
         {
-            return NaiveClosestPair(_points);
-        }
-        
-        static Point ClosestPair(IEnumerable<Point> points, XYZ rvtObj)
-        {
-            var closestPair = new Point();
+            var closestPair = new List<Point>();
 
             // When we start the min distance is the infinity
             var crtMinDist = MaxDistance;
@@ -53,41 +63,11 @@ namespace DSB.RevitTools.EtabsToRevit
             sorted.AddRange(points);
             sorted.Sort(XComparer.XCompare);
 
-            // TODO Replace this with XYZ coord 
-            Point current = new Point();
-
             sorted.RemoveAll(x => x.X < rvtObj.X - crtMinDist || rvtObj.X + crtMinDist < x.X);
             sorted.RemoveAll(x => x.Y < rvtObj.Y - crtMinDist || rvtObj.Y + crtMinDist < x.Y);
             sorted.RemoveAll(x => x.Z < rvtObj.Z - crtMinDist || rvtObj.Z + crtMinDist < x.Z);
-
-            var sortedX = sorted;
             
-            return closestPair;
-        }
-    
-
-        static Point[] NaiveClosestPair(IEnumerable<Point> points)
-        {
-            var min = MaxDistance;
-
-            var closestPair = new Point[2];
-
-            foreach (var p1 in points)
-            {
-                foreach (var p2 in points)
-                {
-                    if (p1.Equals(p2)) continue;
-
-                    var dist = p1.Distance(p2);
-                    if (dist < min)
-                    {
-                        min = dist;
-                        closestPair[0] = p1;
-                        closestPair[1] = p2;
-                    }
-                }
-            }
-            return closestPair;
+            return sorted;
         }
     }
 }

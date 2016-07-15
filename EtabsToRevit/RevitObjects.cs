@@ -12,12 +12,17 @@ namespace DSB.RevitTools.EtabsToRevit
 {
     class RevitObject
     {
+        private Element _element;
         private AnalyticalModel _AnalyticalModel;
         private XYZ _PointStart;
         private XYZ _PointEnd;
         private Family _RevitFamily;
         private string _FamilyInstanceName;
-        
+
+        public void Set_Element(Element element)
+        {
+            _element = element;
+        }
         public void Set_AnalyticalModel(AnalyticalModel analyticalModel)
         {
             _AnalyticalModel = analyticalModel;
@@ -41,6 +46,10 @@ namespace DSB.RevitTools.EtabsToRevit
         
 
         //Get Object Elements
+        public Element Get_Element()
+        {
+            return _element;
+        }
         public AnalyticalModel Get_AnalyticalModel()
         {
             return _AnalyticalModel;

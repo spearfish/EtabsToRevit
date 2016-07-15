@@ -37,6 +37,7 @@ namespace DSB.RevitTools.EtabsToRevit
 
                 if (null != familyInstance && familyInstance.StructuralType == StructuralType.Column)
                 {
+                    Element element = e;
                     AnalyticalModel analyticalModel = familyInstance.GetAnalyticalModel();
                     Curve analyticalCurve = analyticalModel.GetCurve();
                     XYZ pointStart = analyticalCurve.GetEndPoint(0);
@@ -46,6 +47,7 @@ namespace DSB.RevitTools.EtabsToRevit
 
                     //Create Revit Object and Set Methods 
                     RevitObject revitObject = new RevitObject();
+                    revitObject.Set_Element(element);
                     revitObject.Set_AnalyticalModel(analyticalModel);
                     revitObject.Set_PointStart(pointStart);
                     revitObject.Set_PointEnd(pointEnd);
@@ -74,6 +76,7 @@ namespace DSB.RevitTools.EtabsToRevit
 
                 if (null != familyInstance && familyInstance.StructuralType == StructuralType.Beam)
                 {
+                    Element element = e;
                     AnalyticalModel analyticalModel = familyInstance.GetAnalyticalModel();
                     Curve analyticalCurve = analyticalModel.GetCurve();
                     XYZ pointStart = analyticalCurve.GetEndPoint(0);
@@ -83,6 +86,7 @@ namespace DSB.RevitTools.EtabsToRevit
 
                     //Create Revit Object and Set Methods 
                     RevitObject revitObject = new RevitObject();
+                    revitObject.Set_Element(element);
                     revitObject.Set_AnalyticalModel(analyticalModel);
                     revitObject.Set_PointStart(pointStart);
                     revitObject.Set_PointEnd(pointEnd);

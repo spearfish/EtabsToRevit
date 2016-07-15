@@ -93,6 +93,7 @@
   <ItemGroup>
     <Compile Include="Algorithm.cs" />
     <Compile Include="App.cs" />
+    <Compile Include="RevitChangeType.cs" />
     <Compile Include="XComparer.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Command.cs" />
