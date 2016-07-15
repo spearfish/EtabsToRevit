@@ -43,8 +43,7 @@ namespace DSB.RevitTools.EtabsToRevit
                     XYZ pointStart = analyticalCurve.GetEndPoint(0);
                     XYZ pointEnd = analyticalCurve.GetEndPoint(1);
                     Family family = familyInstance.Symbol.Family;
-                    string familyInstanceName = familyInstance.Name;
-
+                    
                     //Create Revit Object and Set Methods 
                     RevitObject revitObject = new RevitObject();
                     revitObject.Set_Element(element);
@@ -52,7 +51,7 @@ namespace DSB.RevitTools.EtabsToRevit
                     revitObject.Set_PointStart(pointStart);
                     revitObject.Set_PointEnd(pointEnd);
                     revitObject.Set_RevitFamily(family);
-                    revitObject.Set_FamilyInstanceName(familyInstanceName);
+                    revitObject.Set_FamilyInstance(familyInstance);
                     _RevitColumnsList.Add(revitObject);
                 }
             }
@@ -82,8 +81,7 @@ namespace DSB.RevitTools.EtabsToRevit
                     XYZ pointStart = analyticalCurve.GetEndPoint(0);
                     XYZ pointEnd = analyticalCurve.GetEndPoint(1);
                     Family family = familyInstance.Symbol.Family;
-                    string familyInstanceName = familyInstance.Name;
-
+                    
                     //Create Revit Object and Set Methods 
                     RevitObject revitObject = new RevitObject();
                     revitObject.Set_Element(element);
@@ -91,7 +89,7 @@ namespace DSB.RevitTools.EtabsToRevit
                     revitObject.Set_PointStart(pointStart);
                     revitObject.Set_PointEnd(pointEnd);
                     revitObject.Set_RevitFamily(family);
-                    revitObject.Set_FamilyInstanceName(familyInstanceName);
+                    revitObject.Set_FamilyInstance(familyInstance);
                     _RevitFramingList.Add(revitObject);
                 }
             }

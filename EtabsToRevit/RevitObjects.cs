@@ -17,7 +17,7 @@ namespace DSB.RevitTools.EtabsToRevit
         private XYZ _PointStart;
         private XYZ _PointEnd;
         private Family _RevitFamily;
-        private string _FamilyInstanceName;
+        private FamilyInstance _FamilyInstance;
 
         public void Set_Element(Element element)
         {
@@ -39,9 +39,9 @@ namespace DSB.RevitTools.EtabsToRevit
         {
             _RevitFamily = RevitFamily;
         }
-        public void Set_FamilyInstanceName(string FamilyInstanceName)
+        public void Set_FamilyInstance(FamilyInstance FamilyInstance)
         {
-            _FamilyInstanceName = FamilyInstanceName;
+            _FamilyInstance = FamilyInstance;
         }
         
 
@@ -66,9 +66,9 @@ namespace DSB.RevitTools.EtabsToRevit
         {
             return _RevitFamily;
         }
-        public string Get_FamilyInstanceName()
+        public FamilyInstance Get_FamilyInstance()
         {
-            return _FamilyInstanceName;
+            return _FamilyInstance;
         }
     }
 }

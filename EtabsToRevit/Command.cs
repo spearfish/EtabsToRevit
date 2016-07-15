@@ -60,13 +60,11 @@ namespace DSB.RevitTools.EtabsToRevit
             RevitObject revitObj = Sorted_RevitColumnsList[10];
 
             XYZ RvtObj = revitObj.Get_PointStart();
-            //algorithm.Run(RvtObj);
-                        
-            //algorithm.Run(revitObj, pointsColumnStart);
-            List<string> test = new List<string>();
-            List<string> test1 = new List<string>();
+            
+            RevitChangeType changetype = new RevitChangeType();
             foreach (RevitObject rvtObj in Sorted_RevitColumnsList)
             {
+                
                 var startPoint = algorithmColumnStart.Run(rvtObj.Get_PointStart(), pointsColumnStart);
                 var endPoint = algorithmColumnEnd.Run(rvtObj.Get_PointEnd(), pointsColumnEnd);
 
@@ -75,15 +73,16 @@ namespace DSB.RevitTools.EtabsToRevit
                     foreach (Point pEnd in endPoint)
                     {
                         if (pStart.UniqueID == pEnd.UniqueID)
-                        {
+                        {                
                             var EtabsObject = Sorted_EtabsColumnList.Find(item => item.Get_UniqueID() == pStart.UniqueID);
-                            test.Add(EtabsObject._SectionName);
-                            test1.Add(EtabsObject.Get_UniqueID().ToString());
+                            changetype.changeType(doc, uidoc, rvtObj, EtabsObject);
                             break;
                         }
                     }
                 }
             }
+
+
             return Result.Succeeded;
         }
     }
