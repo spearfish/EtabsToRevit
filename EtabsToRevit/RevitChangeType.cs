@@ -9,17 +9,16 @@ namespace DSB.RevitTools.EtabsToRevit
 {
     class RevitChangeType
     {
-        public void changeType(Document doc, List<RevitObject> revitObjectList)
+        public void changeType(Document doc, UIDocument uidoc, RevitObject revitObject, EtabObject etabObject)
         {
-            foreach (RevitObject revitObject in revitObjectList)
-            {
-                Element element = revitObject.Get_Element();
-
-                Transaction trans = new Transaction( doc, "Edit Type" );
-                trans.Start();
-                //element.ChangeTypeId( ladderType.Id );
-                trans.Commit();
-            }
+            string _typeName = etabObject._SectionName;
+            
+            Transaction trans = new Transaction( doc, "Edit Type" );
+            trans.Start();
+            familySymbol symbol = Util.FindElementByName(doc, typeof(FamilySymbol), _typeName) as FamilySymbol; 
+            FamilyInstance revitFamilyInstance = revitObject.Get_FamilyInstanceName();
+            revitFamilyInstance.Symbol = symbol; 
+            trans.Commit();
         }
     }
 }
