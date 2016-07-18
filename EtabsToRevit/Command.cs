@@ -56,15 +56,11 @@ namespace DSB.RevitTools.EtabsToRevit
             Algorithm algorithmBeamEnd = new Algorithm(Sorted_EtabsBeamList, "End");
             List<Point> pointsBeamStart = algorithmBeamStart.Get_Points();
             List<Point> pointsBeamEnd = algorithmBeamEnd.Get_Points();
-            
-            RevitObject revitObj = Sorted_RevitColumnsList[10];
-
-            XYZ RvtObj = revitObj.Get_PointStart();
+           
             
             RevitChangeType changetype = new RevitChangeType();
             foreach (RevitObject rvtObj in Sorted_RevitColumnsList)
             {
-                
                 var startPoint = algorithmColumnStart.Run(rvtObj.Get_PointStart(), pointsColumnStart);
                 var endPoint = algorithmColumnEnd.Run(rvtObj.Get_PointEnd(), pointsColumnEnd);
 
@@ -75,14 +71,31 @@ namespace DSB.RevitTools.EtabsToRevit
                         if (pStart.UniqueID == pEnd.UniqueID)
                         {                
                             var EtabsObject = Sorted_EtabsColumnList.Find(item => item.Get_UniqueID() == pStart.UniqueID);
-                            changetype.changeType(doc, uidoc, rvtObj, EtabsObject);
+                            changetype.changeTypeColumn(doc, rvtObj, EtabsObject);
                             break;
                         }
                     }
                 }
             }
 
+            foreach (RevitObject rvtObj in Sorted_RevitFramingList)
+            {
+                var startPoint = algorithmBeamStart.Run(rvtObj.Get_PointStart(), pointsBeamStart);
+                var endPoint = algorithmBeamEnd.Run(rvtObj.Get_PointEnd(), pointsBeamEnd);
 
+                foreach (Point pStart in startPoint)
+                {
+                    foreach (Point pEnd in endPoint)
+                    {
+                        if (pStart.UniqueID == pEnd.UniqueID)
+                        {
+                            var EtabsObject = Sorted_EtabsBeamList.Find(item => item.Get_UniqueID() == pStart.UniqueID);
+                            changetype.changeTypeFraming(doc, rvtObj, EtabsObject);
+                            break;
+                        }
+                    }
+                }
+            }
             return Result.Succeeded;
         }
     }
