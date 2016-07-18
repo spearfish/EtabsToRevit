@@ -15,23 +15,20 @@ namespace DSB.RevitTools.EtabsToRevit
 {
     class RevitChangeType
     {
-        public void changeTypeColumn(Document doc, RevitObject revitObject, EtabObject etabObject)
+        public void changeTypeColumn(Document doc, RevitObject revitObject, EtabObject etabObject, List<FamilySymbol> structuralColumnTypeList)
         {
             string _typeName = etabObject._SectionName;
-
-            var structuralColumnType = new FilteredElementCollector(doc).OfClass(typeof(FamilySymbol)).OfCategory(BuiltInCategory.OST_StructuralColumns);
-            List<FamilySymbol> structuralColumnTypeList = structuralColumnType.ToElements().Cast<FamilySymbol>().ToList();
             FamilySymbol symbol = structuralColumnTypeList.Find(x => x.Name == _typeName);
+            // Check to see if element type exist in the project
             if (symbol == null)
             {
                 loadFamily(doc, etabObject, structuralColumnTypeList);
             }
-
+            // Transaction to change the element type 
             Transaction trans = new Transaction( doc, "Edit Type" );
             trans.Start();
             try
             {
-                
                 FamilyInstance revitFamilyInstance = revitObject.Get_FamilyInstance();
                 revitFamilyInstance.Symbol = symbol; 
             }
@@ -39,18 +36,15 @@ namespace DSB.RevitTools.EtabsToRevit
             trans.Commit();
         }
 
-        public void changeTypeFraming(Document doc, RevitObject revitObject, EtabObject etabObject)
+        public void changeTypeFraming(Document doc, RevitObject revitObject, EtabObject etabObject, List<FamilySymbol> structuralFramingTypeList)
         {
             string _typeName = etabObject._SectionName;
-
-            var structuralFramingType = new FilteredElementCollector(doc).OfClass(typeof(FamilySymbol)).OfCategory(BuiltInCategory.OST_StructuralFraming);
-            List<FamilySymbol> structuralFramingTypeList = structuralFramingType.ToElements().Cast<FamilySymbol>().ToList();
+            FamilySymbol symbol = structuralFramingTypeList.Find(x => x.Name == _typeName);
 
             Transaction trans = new Transaction(doc, "Edit Type");
             trans.Start();
             try
             {
-                FamilySymbol symbol = structuralFramingTypeList.Find(x => x.Name == _typeName);
                 FamilyInstance revitFamilyInstance = revitObject.Get_FamilyInstance();
                 revitFamilyInstance.Symbol = symbol;
             }
@@ -107,6 +101,8 @@ namespace DSB.RevitTools.EtabsToRevit
             }
         }
     }
+
+    // Loading family type override options
     class FamilyLoadingOverwriteOption : IFamilyLoadOptions
     {
         public bool OnFamilyFound(bool familyInUse, out bool overwriteParameterValues)

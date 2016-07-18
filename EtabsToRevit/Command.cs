@@ -56,8 +56,15 @@ namespace DSB.RevitTools.EtabsToRevit
             Algorithm algorithmBeamEnd = new Algorithm(Sorted_EtabsBeamList, "End");
             List<Point> pointsBeamStart = algorithmBeamStart.Get_Points();
             List<Point> pointsBeamEnd = algorithmBeamEnd.Get_Points();
-           
+
+            //List of all column symbols "also know as types in Revit"
+            var structuralColumnType = new FilteredElementCollector(doc).OfClass(typeof(FamilySymbol)).OfCategory(BuiltInCategory.OST_StructuralColumns);
+            List<FamilySymbol> structuralColumnTypeList = structuralColumnType.ToElements().Cast<FamilySymbol>().ToList();
+            //List of all farming symbols "also know as types in Revit"
+            var structuralFramingType = new FilteredElementCollector(doc).OfClass(typeof(FamilySymbol)).OfCategory(BuiltInCategory.OST_StructuralFraming);
+            List<FamilySymbol> structuralFramingTypeList = structuralFramingType.ToElements().Cast<FamilySymbol>().ToList();
             
+            // Change column element type using Etabs objects 
             RevitChangeType changetype = new RevitChangeType();
             foreach (RevitObject rvtObj in Sorted_RevitColumnsList)
             {
@@ -71,13 +78,14 @@ namespace DSB.RevitTools.EtabsToRevit
                         if (pStart.UniqueID == pEnd.UniqueID)
                         {                
                             var EtabsObject = Sorted_EtabsColumnList.Find(item => item.Get_UniqueID() == pStart.UniqueID);
-                            changetype.changeTypeColumn(doc, rvtObj, EtabsObject);
+                            changetype.changeTypeColumn(doc, rvtObj, EtabsObject, structuralColumnTypeList);
                             break;
                         }
                     }
                 }
             }
 
+            // Change framing element type using Etabs object
             foreach (RevitObject rvtObj in Sorted_RevitFramingList)
             {
                 var startPoint = algorithmBeamStart.Run(rvtObj.Get_PointStart(), pointsBeamStart);
@@ -90,7 +98,7 @@ namespace DSB.RevitTools.EtabsToRevit
                         if (pStart.UniqueID == pEnd.UniqueID)
                         {
                             var EtabsObject = Sorted_EtabsBeamList.Find(item => item.Get_UniqueID() == pStart.UniqueID);
-                            changetype.changeTypeFraming(doc, rvtObj, EtabsObject);
+                            changetype.changeTypeFraming(doc, rvtObj, EtabsObject, structuralFramingTypeList);
                             break;
                         }
                     }
