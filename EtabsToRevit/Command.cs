@@ -63,7 +63,19 @@ namespace DSB.RevitTools.EtabsToRevit
             //List of all farming symbols "also know as types in Revit"
             var structuralFramingType = new FilteredElementCollector(doc).OfClass(typeof(FamilySymbol)).OfCategory(BuiltInCategory.OST_StructuralFraming);
             List<FamilySymbol> structuralFramingTypeList = structuralFramingType.ToElements().Cast<FamilySymbol>().ToList();
-            
+
+            ElementClassFilter FamilyFilter = new ElementClassFilter(typeof(Family));
+            FilteredElementCollector FamilyCollector = new FilteredElementCollector(doc);
+            ICollection<Element> AllFamilies = FamilyCollector.WherePasses(FamilyFilter).ToElements();
+            foreach (Family Fmly in AllFamilies)
+            {
+                string FamilyName = Fmly.Name;
+                foreach (Parameter Param in Fmly.Parameters)
+                {
+                    string ParamName = Param.Definition.Name;
+                }
+            }
+
             // Change column element type using Etabs objects 
             RevitChangeType changetype = new RevitChangeType();
             foreach (RevitObject rvtObj in Sorted_RevitColumnsList)

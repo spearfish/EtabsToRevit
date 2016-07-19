@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace DSB.RevitTools.EtabsToRevit
 {
@@ -18,11 +19,12 @@ namespace DSB.RevitTools.EtabsToRevit
         public void changeTypeColumn(Document doc, RevitObject revitObject, EtabObject etabObject, List<FamilySymbol> structuralColumnTypeList)
         {
             string _typeName = etabObject._SectionName;
-            FamilySymbol symbol = structuralColumnTypeList.Find(x => x.Name == _typeName);
+            FamilySymbol symbol = structuralColumnTypeList.Find(x => x.Name == etabObject._SectionName);
+            
             // Check to see if element type exist in the project
             if (symbol == null)
             {
-                loadFamily(doc, etabObject, structuralColumnTypeList);
+                loadFamily(doc, etabObject);
             }
             // Transaction to change the element type 
             Transaction trans = new Transaction( doc, "Edit Type" );
@@ -52,55 +54,81 @@ namespace DSB.RevitTools.EtabsToRevit
             trans.Commit();
         }
 
-
-
-        static string FamilyName = "WWF-Welded Wide Flange-Column.rfa";
         const string _familyFolder = @"X:\Revit\Revit Unifi Library\z-Autodesk OOTB Revit 2015 Family Library\Libraries\US Imperial\Structural Columns\Steel";
        // const string _familyFolder = Path.GetDirectoryName(typeof(FamilySymbol).Assembly.Location);
-        const string _familyExt = "rfa";
         static string _family_path = null;
+        static string _familyfile_name;
 
-        public void loadFamily(Document doc, EtabObject etabObject, List<FamilySymbol> structuralColumnTypeList)
+        public void loadFamily(Document doc, EtabObject etabObject)
         {
-            string _typeName = etabObject._SectionName;
+            //using regular expression to search for the abbriviation of shape
+            var typeNameRegex_Expression = @"^[A-Z]*\D";
+            var typeNameRegex = Regex.Match(etabObject._SectionName, typeNameRegex_Expression);
+            string returnValue;
+            ColumnDictionary().TryGetValue(typeNameRegex.ToString(), out returnValue);
+            // Retrive file name from dictionary using the appriviation
+            _familyfile_name = returnValue;
 
-            FilteredElementCollector collector= new FilteredElementCollector(doc);
-            collector.OfClass(typeof(Family)).ToElements();
-            IEnumerable<Family> nestedFamilies = collector.Cast<Family>();
-            Family family = null;
-           
-            
+            FamilySymbol familySymbol = null;
             string familypath = FilePath; // method file path
+
             using (Transaction tx = new Transaction(doc))
             {
                 tx.Start("Load Family");
-                doc.LoadFamily(familypath, out family);
-                tx.Commit();
-            }
-            FamilySymbol symbol = null;
-
-            foreach (FamilySymbol s in structuralColumnTypeList)
-            {
-                if (s.Name == _typeName)
+                Family family = null;
+                string symbName = null;
+                int counter = 0;
+                if (doc.LoadFamily(familypath, new FamilyLoadingOverwriteOption(), out family))
                 {
-                    symbol = s;
+                    foreach (ElementId fsids in family.GetFamilySymbolIds())
+                    {
+                        ElementType elemtype = doc.GetElement(fsids) as ElementType;
+                        FamilySymbol symb = elemtype as FamilySymbol;
+                        //TaskDialog.Show("Symbol names", symb.Name);
+                        if (counter == 0)
+                        {
+                            symbName = symb.Name;
+                        }
+                        counter++;
+                    }
                 }
-                break;
-            }
+                tx.RollBack();
+
+                Transaction transNew = new Transaction(doc, "RealLoading");
+
+                transNew.Start();
+
+                if (doc.LoadFamilySymbol(familypath, symbName, new FamilyLoadingOverwriteOption(), out familySymbol))
+                {
+                    TaskDialog.Show("Status",
+                      "We managed to load only one desired symbol!");
+                }
+                transNew.Commit();
+            } 
         }
+
+        private static Dictionary <string, string> ColumnDictionary()
+        {
+            Dictionary<String, String> ColumnName = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            ColumnName.Add("W", "W-Wide Flange-Column.rfa");
+            ColumnName.Add("HSS", "HSS-Hollow Structural Section-Column.rfa");
+            return ColumnName;
+        }
+
         static string FilePath
         {
             get
             {
                 if (null == _family_path)
                 {
-                    _family_path = Path.Combine(_familyFolder, FamilyName);
-                    _family_path = Path.Combine(_family_path);
+                    _family_path = Path.Combine(_familyFolder, _familyfile_name);
+                    //_family_path = Path.Combine(_family_path);
                 }
                 return _family_path;
             }
         }
     }
+    
 
     // Loading family type override options
     class FamilyLoadingOverwriteOption : IFamilyLoadOptions
