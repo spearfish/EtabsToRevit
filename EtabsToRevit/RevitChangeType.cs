@@ -24,7 +24,7 @@ namespace DSB.RevitTools.EtabsToRevit
             // Check to see if element type exist in the project
             if (symbol == null)
             {
-                loadFamily(doc, etabObject);
+                 symbol = loadFamily(doc, etabObject);
             }
             // Transaction to change the element type 
             Transaction trans = new Transaction( doc, "Edit Type" );
@@ -59,7 +59,7 @@ namespace DSB.RevitTools.EtabsToRevit
         static string _family_path = null;
         static string _familyfile_name;
 
-        public void loadFamily(Document doc, EtabObject etabObject)
+        public FamilySymbol loadFamily(Document doc, EtabObject etabObject)
         {
             //using regular expression to search for the abbriviation of shape
             var typeNameRegex_Expression = @"^[A-Z]*\D";
@@ -85,7 +85,8 @@ namespace DSB.RevitTools.EtabsToRevit
                         ElementType elemtype = doc.GetElement(fsids) as ElementType;
                         FamilySymbol symb = elemtype as FamilySymbol;
                         //TaskDialog.Show("Symbol names", symb.Name);
-                        if (counter == 0)
+                        string x = "W24X55";
+                        if (symb.Name == etabObject._SectionName)
                         {
                             symbName = symb.Name;
                         }
@@ -98,13 +99,15 @@ namespace DSB.RevitTools.EtabsToRevit
 
                 transNew.Start();
 
-                if (doc.LoadFamilySymbol(familypath, symbName, new FamilyLoadingOverwriteOption(), out familySymbol))
+                if (doc.LoadFamilySymbol(familypath, symbName, out familySymbol))
                 {
                     TaskDialog.Show("Status",
                       "We managed to load only one desired symbol!");
+                   
                 }
                 transNew.Commit();
-            } 
+            }
+            return familySymbol;
         }
 
         private static Dictionary <string, string> ColumnDictionary()
