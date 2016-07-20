@@ -77,7 +77,7 @@ namespace DSB.RevitTools.EtabsToRevit
             }
 
             // Change column element type using Etabs objects 
-            RevitChangeType changetype = new RevitChangeType();
+            RevitChangeType revitChangetype = new RevitChangeType();
             foreach (RevitObject rvtObj in Sorted_RevitColumnsList)
             {
                 var startPoint = algorithmColumnStart.Run(rvtObj.Get_PointStart(), pointsColumnStart);
@@ -90,7 +90,7 @@ namespace DSB.RevitTools.EtabsToRevit
                         if (pStart.UniqueID == pEnd.UniqueID)
                         {                
                             var EtabsObject = Sorted_EtabsColumnList.Find(item => item.Get_UniqueID() == pStart.UniqueID);
-                            changetype.changeTypeColumn(doc, rvtObj, EtabsObject, structuralColumnTypeList);
+                            revitChangetype.changeType(doc, rvtObj, EtabsObject, structuralColumnTypeList);
                             break;
                         }
                     }
@@ -110,7 +110,7 @@ namespace DSB.RevitTools.EtabsToRevit
                         if (pStart.UniqueID == pEnd.UniqueID)
                         {
                             var EtabsObject = Sorted_EtabsBeamList.Find(item => item.Get_UniqueID() == pStart.UniqueID);
-                            changetype.changeTypeFraming(doc, rvtObj, EtabsObject, structuralFramingTypeList);
+                            revitChangetype.changeType(doc, rvtObj, EtabsObject, structuralFramingTypeList);
                             break;
                         }
                     }
