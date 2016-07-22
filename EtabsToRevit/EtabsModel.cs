@@ -82,6 +82,9 @@ namespace DSB.RevitTools.EtabsToRevit
                     case 9:
                         Etabs_Object.Set_UniqueID(Convert.ToInt32(cellValue));
                         break;
+                    case 10:
+                        Etabs_Object._SectionType = Convert.ToString(cellValue);
+                        break;
                 }
             }
 

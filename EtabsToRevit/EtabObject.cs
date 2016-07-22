@@ -12,6 +12,7 @@ namespace DSB.RevitTools.EtabsToRevit
         public string _LabelNumber { get; set; }
         private Point _Point_Start = new Point();
         private Point _Point_End = new Point();
+        public string _SectionType { get; set; }
      
         // Start get and set start points
         public void Set_UniqueID(int UniqueID)
