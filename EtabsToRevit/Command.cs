@@ -26,8 +26,9 @@ namespace DSB.RevitTools.EtabsToRevit
             Document doc = uidoc.Document;
 
             EtabsModel EtabModel = new EtabsModel();
-            string path = @"F:\00 - ETABS\REVIT_Report.xlsx";
-            List<EtabObject> EtabsList = EtabModel.Get_ExcelFileToList(path);
+            const string path = @"F:\00 - ETABS\REVIT_Report.xlsx";
+            const string pathSea = @"F:\00 - ETABS\2016-08-03-Revit-Etabs.xlsx";
+            List<EtabObject> EtabsList = EtabModel.Get_ExcelFileToList(pathSea);
 
             // Etab Column List Sorted using the X value. 
             List<EtabObject> EtabsColumnList = EtabModel.Get_EtabsColumnList(EtabsList);
@@ -60,6 +61,7 @@ namespace DSB.RevitTools.EtabsToRevit
             //List of all column symbols "also know as types in Revit"
             var structuralColumnType = new FilteredElementCollector(doc).OfClass(typeof(FamilySymbol)).OfCategory(BuiltInCategory.OST_StructuralColumns);
             List<FamilySymbol> structuralColumnTypeList = structuralColumnType.ToElements().Cast<FamilySymbol>().ToList();
+            
             //List of all farming symbols "also know as types in Revit"
             var structuralFramingType = new FilteredElementCollector(doc).OfClass(typeof(FamilySymbol)).OfCategory(BuiltInCategory.OST_StructuralFraming);
             List<FamilySymbol> structuralFramingTypeList = structuralFramingType.ToElements().Cast<FamilySymbol>().ToList();

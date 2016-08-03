@@ -47,9 +47,6 @@ namespace DSB.RevitTools.EtabsToRevit
 
         public FamilySymbol loadFamily(Document doc, EtabObject etabObject)
         {
-            //using regular expression to search for the abbriviation of shape
-            //var typeNameRegex_Expression = @"^[A-Z]*\D";
-            //var typeNameRegex = Regex.Match(etabObject._SectionName, typeNameRegex_Expression);
             string returnFamilyPath;
 
             // test to see if Etab object is a column 
@@ -75,29 +72,39 @@ namespace DSB.RevitTools.EtabsToRevit
                 tx.Start("Load Family");
                 Family family = null;
                 string symbName = null;
-                if (doc.LoadFamily(_family_path, new FamilyLoadingOverwriteOption(), out family))
+                try
                 {
-                    foreach (ElementId fsids in family.GetFamilySymbolIds())
+                    if (doc.LoadFamily(_family_path, new FamilyLoadingOverwriteOption(), out family))
                     {
-                        ElementType elemtype = doc.GetElement(fsids) as ElementType;
-                        FamilySymbol symb = elemtype as FamilySymbol;
-                        // test to see if family symbol is the same type as Etabs Object. 
-                        if (symb.Name == etabObject._SectionName)
+                        foreach (ElementId fsids in family.GetFamilySymbolIds())
                         {
-                            symbName = symb.Name;
+                            ElementType elemtype = doc.GetElement(fsids) as ElementType;
+                            FamilySymbol symb = elemtype as FamilySymbol;
+                            // test to see if family symbol is the same type as Etabs Object. 
+                            if (symb.Name == etabObject._SectionName)
+                            {
+                                symbName = symb.Name;
+                            }
                         }
                     }
                 }
+                catch { }
+                
                 tx.RollBack(); // Roll back to only select the type that we want. 
 
                 // Transaction to load the the family type. 
                 Transaction transNew = new Transaction(doc, "RealLoading");
                 transNew.Start();
+                List<string> notconverted = new List<string>();
                 try
                 {
-                    doc.LoadFamilySymbol(_family_path, symbName, out familySymbol); // load only the family type 
+                    if (!doc.LoadFamilySymbol(_family_path, symbName, new FamilyLoadingOverwriteOption(), out familySymbol))
+                    {
+                        notconverted.Add(symbName);
+                    }
                 }
                 catch { }
+                
                 transNew.Commit();
             }
             return familySymbol;
